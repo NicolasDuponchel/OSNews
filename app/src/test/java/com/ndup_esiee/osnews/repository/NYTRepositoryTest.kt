@@ -1,15 +1,25 @@
 package com.ndup_esiee.osnews.repository
 
+import com.ndup_esiee.osnews.objectgraph.repositoryModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
+import org.junit.Rule
 import org.junit.Test
+import org.koin.test.KoinTest
+import org.koin.test.KoinTestRule
+import org.koin.test.inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class NYTRepositoryTest {
+class NYTRepositoryTest: KoinTest {
 
-    //TODO NDU: inject this ?
-    private val repo = NYTRepository()
+    private val repo: INYTRepository by inject()
+
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        printLogger()
+        modules(repositoryModule)
+    }
 
     @Test
     fun `check for sections result`() = runTest {
