@@ -21,10 +21,11 @@ object NYTServiceFactory {
         .client(client)
         .build()
 
-    private val client get() = OkHttpClient.Builder()
-        .addInterceptor { apiKeyAsQuery(it) }
-        .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
-        .build()
+    private val client
+        get() = OkHttpClient.Builder()
+            .addInterceptor { apiKeyAsQuery(it) }
+            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.NONE }) //BODY })
+            .build()
 
     private fun apiKeyAsQuery(chain: Interceptor.Chain) = chain.proceed(
         chain.request()
@@ -33,6 +34,6 @@ object NYTServiceFactory {
             .build()
     )
 
-    val service: NYTServices = retrofit.create(NYTServices::class.java)
+    val service: NYTApiServices = retrofit.create(NYTApiServices::class.java)
 
 }

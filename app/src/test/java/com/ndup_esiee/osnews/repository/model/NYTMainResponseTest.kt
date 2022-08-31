@@ -5,7 +5,7 @@ import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class SectionsResponseTest {
+class NYTMainResponseTest {
 
     @Test
     fun `repository response serialization`() {
@@ -64,9 +64,16 @@ class SectionsResponseTest {
             "Your Money",
         )
 
-        assertEquals(sections, Json.decodeFromString<SectionsResponse>(json).sections.map { it.displayName })
-        assertEquals("OK", Json.decodeFromString<SectionsResponse>(json).status)
-        assertEquals(50, Json.decodeFromString<SectionsResponse>(json).numResults)
+        assertEquals(sections, Json.decodeFromString<NYTMainResponse<Sections>>(json).results.map { it.displayName })
+        assertEquals("OK", Json.decodeFromString<NYTMainResponse<Sections>>(json).status)
+        assertEquals(50, Json.decodeFromString<NYTMainResponse<Sections>>(json).numResults)
+    }
+
+
+    @Test
+    fun `news wire response serialization`() {
+        val newsWireJson = """{"slug_name":"31travel-pacific-fader","section":"Travel","subsection":"","title":"31 travel pacific fader","abstract":"31 travel pacific fader","uri":"nyt://slideshow/974a43fd-0ae6-572b-998b-a9862cafb124","url":"https://static01.nyt.com/slideshow/2022/08/31/travel/31-travel-pacific-fader.html","byline":"","thumbnail_standard":"https://static01.nyt.com/images/2022/08/31/travel/31travel-pacific-fader-slide-7WCP/31travel-pacific-fader-slide-7WCP-thumbStandard.jpg","item_type":"Slideshow","source":"New York Times","updated_date":"2022-08-31T08:46:46-04:00","created_date":"2022-08-31T08:46:46-04:00","published_date":"2022-08-31T08:46:46-04:00","first_published_date":"2022-08-31T08:46:46-04:00","material_type_facet":"Slideshow","kicker":"","subheadline":"","des_facet":null,"org_facet":null,"per_facet":null,"geo_facet":null,"related_urls":[{"suggested_link_text":"Heat, Water, Fire: How Climate Change Is Transforming the Pacific Crest Trail","url":"https://www.nytimes.com/2022/08/31/travel/climate-change-pacific-crest-trail.html"}],"multimedia":[{"url":"https://static01.nyt.com/images/2022/08/31/travel/31travel-pacific-fader-slide-7WCP/31travel-pacific-fader-slide-7WCP-thumbStandard.jpg","format":"Standard Thumbnail","height":75,"width":75,"type":"image","subtype":"photo","caption":"","copyright":"Mason Trinca for The New York Times"},{"url":"https://static01.nyt.com/images/2022/08/31/travel/31travel-pacific-fader-slide-7WCP/31travel-pacific-fader-slide-7WCP-mediumThreeByTwo210.jpg","format":"mediumThreeByTwo210","height":140,"width":210,"type":"image","subtype":"photo","caption":"","copyright":"Mason Trinca for The New York Times"},{"url":"https://static01.nyt.com/images/2022/08/31/travel/31travel-pacific-fader-slide-7WCP/31travel-pacific-fader-slide-7WCP-mediumThreeByTwo440.jpg","format":"mediumThreeByTwo440","height":293,"width":440,"type":"image","subtype":"photo","caption":"","copyright":"Mason Trinca for The New York Times"},{"url":"https://static01.nyt.com/images/2022/08/31/travel/31travel-pacific-fader-slide-7WCP/31travel-pacific-fader-slide-7WCP-articleInline.jpg","format":"Normal","height":127,"width":190,"type":"image","subtype":"photo","caption":"","copyright":"Mason Trinca for The New York Times"}]}"""
+        println(Json.decodeFromString<NewsWire>(newsWireJson))
     }
 
 }

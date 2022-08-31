@@ -4,17 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SectionsResponse(
+data class NYTMainResponse<T : NYTResponseItems>(
     @SerialName("status") var status: String,
     @SerialName("copyright") var copyright: String,
     @SerialName("num_results") var numResults: Int,
-    @SerialName("results") var sections: Sections,
+    @SerialName("results") var results: T,
 )
 
-@Serializable
-data class Section(
-    @SerialName("section") val section: String,
-    @SerialName("display_name") val displayName: String,
-)
-
-typealias Sections = List<Section>
