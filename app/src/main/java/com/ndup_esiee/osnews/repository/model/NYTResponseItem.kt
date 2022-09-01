@@ -55,10 +55,10 @@ data class RelatedUrls(
 
 @Serializable
 data class Multimedia(
-    @SerialName("url") var url: String? = null,
+    @SerialName("url") var url: String,
     @SerialName("format") var format: String? = null,
-    @SerialName("height") var height: Int? = null,
-    @SerialName("width") var width: Int? = null,
+    @SerialName("height") var height: Int,
+    @SerialName("width") var width: Int,
     @SerialName("type") var type: String? = null,
     @SerialName("subtype") var subtype: String? = null,
     @SerialName("caption") var caption: String? = null,
