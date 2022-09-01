@@ -1,6 +1,7 @@
 package com.ndup_esiee.osnews
 
 import android.app.Application
+import com.ndup_esiee.osnews.objectgraph.presentationModule
 import com.ndup_esiee.osnews.objectgraph.repositoryModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -13,7 +14,7 @@ class OSNewsApp : Application() {
         startKoin {
             androidLogger()
             androidContext(this@OSNewsApp)
-            modules(repositoryModule)
+            modules(repositoryModule, presentationModule)
         }
     }
 }

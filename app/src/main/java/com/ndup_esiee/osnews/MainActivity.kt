@@ -5,13 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.ndup_esiee.osnews.repository.INYTRepository
+import com.ndup_esiee.osnews.presentation.IMainListener
 import com.ndup_esiee.osnews.repository.model.NewsWires
-import com.ndup_esiee.osnews.repository.model.Section
 import com.ndup_esiee.osnews.repository.model.Sections
 import com.ndup_esiee.osnews.ui.NewsWireGrid
 import com.ndup_esiee.osnews.ui.SectionCells
@@ -24,23 +23,15 @@ import org.koin.android.ext.android.inject
  */
 class MainActivity : ComponentActivity() {
 
-    private val nytRepository: INYTRepository by inject()
+    private val viewModel: IMainListener by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var sections: Sections by remember { mutableStateOf(emptyList()) }
-            LaunchedEffect(sections) { sections = nytRepository.getSections() }
-
-            var newsWires: NewsWires by remember { mutableStateOf(emptyList()) }
-            LaunchedEffect(newsWires) {
-                newsWires = nytRepository.getNews(DEFAULT_SECTION)
-                println(newsWires)
-            }
-
+            val mainModelAsState = viewModel.getModelAsState()
             Layout(
-                sections = sections,
-                newsWires = newsWires,
+                sections = mainModelAsState.value.sections,
+                newsWires = mainModelAsState.value.newsWires,
             )
         }
     }
@@ -65,11 +56,5 @@ class MainActivity : ComponentActivity() {
     private fun mainPreview() {
         Layout(sections = sectionsTestList, newsWires = newsWiresTestList)
     }
-
-
-    companion object {
-        private val DEFAULT_SECTION = Section("home page", "Home Page")
-    }
-
 
 }
