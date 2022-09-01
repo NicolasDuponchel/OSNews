@@ -13,10 +13,10 @@ import com.ndup_esiee.osnews.repository.INYTRepository
 import com.ndup_esiee.osnews.repository.model.NewsWires
 import com.ndup_esiee.osnews.repository.model.Section
 import com.ndup_esiee.osnews.repository.model.Sections
-import com.ndup_esiee.osnews.repository.ui.NewsWireGrid
-import com.ndup_esiee.osnews.repository.ui.SectionCells
-import com.ndup_esiee.osnews.repository.ui.newsWiresTestList
-import com.ndup_esiee.osnews.repository.ui.sectionsTestList
+import com.ndup_esiee.osnews.ui.NewsWireGrid
+import com.ndup_esiee.osnews.ui.SectionCells
+import com.ndup_esiee.osnews.ui.newsWiresTestList
+import com.ndup_esiee.osnews.ui.sectionsTestList
 import org.koin.android.ext.android.inject
 
 /**

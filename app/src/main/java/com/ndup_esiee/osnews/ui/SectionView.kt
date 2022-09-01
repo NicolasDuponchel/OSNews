@@ -1,4 +1,4 @@
-package com.ndup_esiee.osnews.repository.ui
+package com.ndup_esiee.osnews.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
