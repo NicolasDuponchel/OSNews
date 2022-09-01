@@ -9,32 +9,52 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ndup_esiee.osnews.repository.model.Section
 import com.ndup_esiee.osnews.repository.model.Sections
+import kotlin.math.roundToInt
+import kotlin.random.Random
 
 @Composable
 fun SectionCell(section: Section) {
     val roundedShape = RoundedCornerShape(8.dp)
-    Text(
+    Box(
         modifier = Modifier
-            .background(
-                color = Color.White,
-                shape = roundedShape,
+            .shadow(
+                elevation = 4.dp,
+                shape = roundedShape
             )
             .border(
                 width = 1.dp,
                 color = Color.Black,
                 shape = roundedShape
             )
-            .padding(horizontal = 8.dp, vertical = 6.dp)
-            .wrapContentSize(),
-        text = section.displayName,
-        textAlign = TextAlign.Center,
-    )
+            .background(
+                color = Color.White,
+                shape = roundedShape,
+            )
+            .clip(roundedShape),
+    ) {
+        Text(
+            modifier = Modifier
+                .background(
+                    color = randomColor(
+                        section = section.displayName,
+                        alpha = (0.6 * 255).roundToInt()
+                    ),
+                )
+                .padding(horizontal = 8.dp, vertical = 6.dp)
+                .wrapContentSize(),
+            text = section.displayName,
+            textAlign = TextAlign.Center,
+        )
+    }
+
 }
 
 @Composable
@@ -51,6 +71,12 @@ fun SectionCells(
     }
 }
 
+private fun randomColor(section: String, alpha: Int = 255): Color {
+    fun randomInt(seed: Long) = Random(seed.times(Random.nextInt())).nextInt(256)
+    val seed = section.hashCode().toLong()
+    return Color(randomInt(seed), randomInt(seed), randomInt(seed), alpha)
+}
+
 
 @Composable
 @Preview
@@ -58,7 +84,6 @@ private fun preview() {
     Column {
         SectionCells(
             sectionsTestList,
-//            Modifier.background(Color.Blue)
         )
     }
 }
