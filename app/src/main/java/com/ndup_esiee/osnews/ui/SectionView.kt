@@ -2,6 +2,7 @@ package com.ndup_esiee.osnews.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,10 +22,13 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 
 @Composable
-fun SectionCell(section: Section) {
+fun SectionCell(
+    section: Section,
+    modifier: Modifier = Modifier,
+) {
     val roundedShape = RoundedCornerShape(8.dp)
     Box(
-        modifier = Modifier
+        modifier = modifier
             .shadow(
                 elevation = 4.dp,
                 shape = roundedShape
@@ -61,13 +65,19 @@ fun SectionCell(section: Section) {
 fun SectionCells(
     list: Sections,
     modifier: Modifier = Modifier,
+    onSectionSelected: (section: Section) -> Unit = {},
 ) {
     LazyRow(
         modifier = modifier.padding(vertical = 12.dp),
         contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        items(items = list) { SectionCell(section = it) }
+        items(items = list) {
+            SectionCell(
+                section = it,
+                modifier = Modifier.clickable { onSectionSelected(it) }
+            )
+        }
     }
 }
 
