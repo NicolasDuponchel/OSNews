@@ -1,4 +1,4 @@
-package com.ndup_esiee.osnews.repository.ui
+package com.ndup_esiee.osnews.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,7 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,6 +32,7 @@ import coil.request.ImageRequest
 import com.ndup_esiee.osnews.repository.model.Multimedia
 import com.ndup_esiee.osnews.repository.model.NewsWire
 import com.ndup_esiee.osnews.repository.model.NewsWires
+import com.ndup_esiee.osnews.ui.utils.onSimpleZoom
 
 
 @OptIn(ExperimentalUnitApi::class)
@@ -42,6 +44,7 @@ fun NewsWireCell(
     val roundedShape = RoundedCornerShape(6.dp)
     BoxWithConstraints(
         modifier = modifier
+            .wrapContentWidth()
             .background(
                 color = Color.White,
                 shape = roundedShape,
@@ -60,7 +63,7 @@ fun NewsWireCell(
             model = multimedia?.url?.let { crossFade(it) },
             loading = { CircularProgressIndicator() },
             contentDescription = multimedia?.copyright ?: "",
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
         )
 
         Text(
@@ -96,17 +99,27 @@ private fun crossFade(imageUrl: String) = ImageRequest.Builder(LocalContext.curr
 fun NewsWireGrid(
     list: NewsWires,
     modifier: Modifier = Modifier,
+    initialColumnCount: Int = 2,
 ) {
-    val arrangement = Arrangement.spacedBy(16.dp)
+    check(initialColumnCount > 0)
+    val padding = 12f
+    val screenWidth = LocalConfiguration.current.screenWidthDp.toFloat()
+    val initialItemWidthFactorised = screenWidth.div(initialColumnCount) - padding.times(2)
+
+    var arrangementWidth by remember { mutableStateOf(initialItemWidthFactorised) }
+    val arrangement = Arrangement.spacedBy(padding.dp)
+
 
     LazyVerticalGrid(
-        modifier = modifier.fillMaxHeight(),
+        modifier = modifier
+            .fillMaxHeight()
+            .onSimpleZoom { zoom -> arrangementWidth = (arrangementWidth * zoom).coerceIn(60f..screenWidth) },
         verticalArrangement = arrangement,
         horizontalArrangement = arrangement,
-        contentPadding = PaddingValues(12.dp),
-        columns = GridCells.Adaptive(100.dp),
+        contentPadding = PaddingValues(padding.dp),
+        columns = GridCells.Adaptive(arrangementWidth.dp),
     ) {
-        items(items = list) { NewsWireCell(it) }
+        items(items = list) { NewsWireCell(it, Modifier.width(arrangementWidth.dp)) }
     }
 }
 
