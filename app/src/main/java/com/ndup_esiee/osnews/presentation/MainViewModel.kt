@@ -21,6 +21,8 @@ data class MainModel(
 interface IMainListener {
     @Composable
     fun getModelAsState(): State<MainModel>
+
+    fun onSectionSelected(section: Section)
 }
 
 
@@ -37,8 +39,10 @@ class MainViewModel(
 
     init {
         getSections()
-        getHomePageNewsWires()
+        getNewsWires()
     }
+
+    override fun onSectionSelected(section: Section) = getNewsWires(section)
 
     private fun getSections() {
         Log.d("VIEW MODEL QUERY", "request sections")
@@ -49,10 +53,10 @@ class MainViewModel(
         }
     }
 
-    private fun getHomePageNewsWires() {
+    private fun getNewsWires(section: Section= DEFAULT_SECTION) {
         Log.d("VIEW MODEL QUERY", "request HOME PAGE news wires")
         viewModelScope.launch {
-            val newsWires = nytRepository.getNews(DEFAULT_SECTION)
+            val newsWires = nytRepository.getNews(section)
             Log.d("VIEW MODEL QUERY", "newsWires received: $newsWires")
             mutableModel.postValue(mutableModel.value!!.copy(newsWires = newsWires))
         }

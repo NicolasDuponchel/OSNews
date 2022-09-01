@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
             contentAlignment = Alignment.BottomCenter
         ) {
             NewsWireGrid(newsWires, Modifier.fillMaxHeight())
-            SectionCells(sections)
+            SectionCells(sections) { viewModel.onSectionSelected(it) }
         }
     }
 
