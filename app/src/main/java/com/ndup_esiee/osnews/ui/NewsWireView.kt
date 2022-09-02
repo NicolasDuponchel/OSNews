@@ -1,6 +1,7 @@
 package com.ndup_esiee.osnews.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -100,6 +101,7 @@ fun NewsWireGrid(
     list: NewsWires,
     modifier: Modifier = Modifier,
     initialColumnCount: Int = 2,
+    onNewsWireSelected: (section: NewsWire) -> Unit = {},
 ) {
     check(initialColumnCount > 0)
     val padding = 12f
@@ -119,7 +121,14 @@ fun NewsWireGrid(
         contentPadding = PaddingValues(padding.dp),
         columns = GridCells.Adaptive(arrangementWidth.dp),
     ) {
-        items(items = list) { NewsWireCell(it, Modifier.width(arrangementWidth.dp)) }
+        items(items = list) {
+            NewsWireCell(
+                newsWire = it,
+                modifier = Modifier
+                    .width(arrangementWidth.dp)
+                    .clickable { onNewsWireSelected(it) }
+            )
+        }
     }
 }
 
