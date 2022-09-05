@@ -18,5 +18,5 @@ val repositoryModule = module {
 
 val presentationModule = module {
     single<MainModel> { MainModel(sections = emptyList(), newsWires = emptyList()) }
-    viewModel { MainViewModel(get(), get()) } bind IMainListener::class
+    viewModel { MainViewModel(get(), get(), it[0]) } bind IMainListener::class
 }
