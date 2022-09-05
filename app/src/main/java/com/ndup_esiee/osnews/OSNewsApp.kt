@@ -10,11 +10,13 @@ import org.koin.core.context.startKoin
 class OSNewsApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        // Start Koin
         startKoin {
             androidLogger()
             androidContext(this@OSNewsApp)
-            modules(repositoryModule, presentationModule)
+            modules(
+                repositoryModule,
+                presentationModule,
+            )
         }
     }
 }

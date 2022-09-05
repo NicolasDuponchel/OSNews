@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ndup_esiee.osnews.repository.INYTRepository
+import com.ndup_esiee.osnews.repository.model.NewsWire
 import com.ndup_esiee.osnews.repository.model.NewsWires
 import com.ndup_esiee.osnews.repository.model.Section
 import com.ndup_esiee.osnews.repository.model.Sections
@@ -23,12 +24,19 @@ interface IMainListener {
     fun getModelAsState(): State<MainModel>
 
     fun onSectionSelected(section: Section)
+
+    fun onNewsWireSelected(newsWire: NewsWire)
+}
+
+fun interface INavigateToNewsStrategy {
+    operator fun invoke(url: String?)
 }
 
 
 class MainViewModel(
     private val initialModel: MainModel,
-    private val nytRepository: INYTRepository
+    private val nytRepository: INYTRepository,
+    private val navigateToNewsStrategy: INavigateToNewsStrategy,
 ) : ViewModel(),
     IMainListener {
 
@@ -38,11 +46,14 @@ class MainViewModel(
     override fun getModelAsState() = mutableModel.observeAsState(initial = initialModel)
 
     init {
+        Log.d("INJECTION", "MainViewModel instance is $this")
         getSections()
         getNewsWires()
     }
 
     override fun onSectionSelected(section: Section) = getNewsWires(section)
+
+    override fun onNewsWireSelected(newsWire: NewsWire) = navigateToNewsStrategy(newsWire.relatedUrls?.firstNotNullOfOrNull { it.url })
 
     private fun getSections() {
         Log.d("VIEW MODEL QUERY", "request sections")
@@ -56,7 +67,7 @@ class MainViewModel(
     private fun getNewsWires(section: Section= DEFAULT_SECTION) {
         Log.d("VIEW MODEL QUERY", "request HOME PAGE news wires")
         viewModelScope.launch {
-            val newsWires = nytRepository.getNews(section)
+            val newsWires = nytRepository.getNews(section).sortedBy { it.relatedUrls != null }
             Log.d("VIEW MODEL QUERY", "newsWires received: $newsWires")
             mutableModel.postValue(mutableModel.value!!.copy(newsWires = newsWires))
         }
