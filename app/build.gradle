@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id "kotlinx-serialization"
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -61,9 +63,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
-    implementation "io.insert-koin:koin-android:$koin_version"
-    testImplementation "io.insert-koin:koin-test:$koin_version"
-    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
+    implementation "com.google.dagger:hilt-android:$hilt_plugin_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_plugin_version"
 
     implementation 'androidx.compose.runtime:runtime-livedata:1.2.1'
 
