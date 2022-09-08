@@ -39,11 +39,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val mainModelAsState = mainListener.getModelAsState().value
-            Layout(
-                sections = mainModelAsState.sections,
-                newsWires = mainModelAsState.newsWires,
-            )
+            with(mainListener.getModelAsState().value) {
+                Layout(
+                    sections = sections,
+                    newsWires = newsWires,
+                )
+            }
         }
     }
 
@@ -71,11 +72,12 @@ class MainActivity : ComponentActivity() {
     private val navigationStrategy by lazy {
         INavigateToNewsStrategy { nullableUrl ->
             nullableUrl
+                .takeUnless { it.isNullOrBlank() }
                 ?.let { url -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
                 ?: run {
                     val errorMessage = "Not able to open url"
                     Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-                    Log.e("INTERNET", "$errorMessage (=$nullableUrl)")
+                    Log.e("INTERNET", "$errorMessage (=\"$nullableUrl\")")
                 }
         }
     }

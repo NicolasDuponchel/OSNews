@@ -57,11 +57,21 @@ class MainViewModel @AssistedInject constructor(
         private val assistedFactory: VMAssistedFactory,
         private val navigateToNewsStrategy: INavigateToNewsStrategy,
     ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = assistedFactory(navigateToNewsStrategy) as T
     }
 
 
-    private val mutableModel: MutableLiveData<MainModel> by lazy { MutableLiveData(initialModel) }
+    private val mutableModel: MutableModel by lazy { MutableModel(initialModel) }
+
+    class MutableModel(private val initialModel: MainModel) : MutableLiveData<MainModel>(initialModel) {
+
+        private val nonNullValue: MainModel get() = value ?: initialModel
+
+        fun updateSections(sections: Sections) = postValue(nonNullValue.copy(sections = sections))
+
+        fun updateNewsWire(newsWires: NewsWires) = postValue(nonNullValue.copy(newsWires = newsWires))
+    }
 
     @Composable
     override fun getModelAsState() = mutableModel.observeAsState(initial = initialModel)
@@ -81,20 +91,18 @@ class MainViewModel @AssistedInject constructor(
         viewModelScope.launch {
             val sections = nytRepository.getSections()
             Log.d("VIEW MODEL QUERY", "sections received: $sections")
-            mutableModel.postValue(mutableModel.value!!.copy(sections = sections))
+            mutableModel.updateSections(sections)
         }
     }
 
     private fun getNewsWires(section: Section = DEFAULT_SECTION) {
         Log.d("VIEW MODEL QUERY", "request HOME PAGE news wires")
         viewModelScope.launch {
-            val newsWires = nytRepository.getNews(section).sortedBy { it.relatedUrls != null }
+            val newsWires = nytRepository.getNews(section).sortedByDescending { newsWire -> newsWire.relatedUrls != null }
             Log.d("VIEW MODEL QUERY", "newsWires received: $newsWires")
-            mutableModel.postValue(mutableModel.value!!.copy(newsWires = newsWires))
+            mutableModel.updateNewsWire(newsWires)
         }
     }
-
-    //TODO NDU: try to factorise model update properly
 
     companion object {
         private val DEFAULT_SECTION = Section("home page", "Home Page")
